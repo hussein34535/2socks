@@ -1,12 +1,12 @@
-name: Build tun2socks
+name: Build and Test 2socks
 
 on:
   push:
     branches:
-      - main  # أو الفرع الذي تود تفعيله للبناء
+      - main  # أو اختر الفرع الذي تريد تنفيذ الـ Actions عليه
   pull_request:
     branches:
-      - main  # نفس الشيء
+      - main  # أو اختر الفرع الذي تريد تنفيذ الـ Actions عليه
 
 jobs:
   build:
@@ -19,16 +19,19 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: '1.18'  # اختر الإصدار الذي تحتاجه من Go
+        go-version: '1.18'  # أو الإصدار الذي يناسب المشروع، تأكد من تطابقه مع go.mod
 
     - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y make
-        go install golang.org/x/mobile/cmd/gomobile@latest  # استخدم go install هنا بدلاً من go get
-        gomobile init  # قم بإعداد gomobile للـ Android
+      run: go mod tidy
 
-    - name: Build tun2socks
-      run: |
-        cd go-tun2socks
-        make  # أو أي أمر بناء آخر تحتاجه
+    - name: Build the project
+      run: go build
+
+    - name: Run tests
+      run: go test ./...
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: build-artifacts
+        path: ./build_output/  # اختر مسار المخرجات التي تريد رفعها
