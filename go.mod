@@ -1,6 +1,6 @@
 module github.com/xxf098/go-tun2socks-build
 
-go 1.21
+go 1.18
 
 require (
 	github.com/eycorsican/go-tun2socks v1.16.11
